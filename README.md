@@ -65,5 +65,5 @@ The dataset used for this project is `Cleaned_Employee.csv`. It contains the fol
 
 1. Clone the repository:
    ```bash
-   git clone 
+   git clone https://github.com/Yusef8812/CC105-django.git
    cd employee-retention-prediction
