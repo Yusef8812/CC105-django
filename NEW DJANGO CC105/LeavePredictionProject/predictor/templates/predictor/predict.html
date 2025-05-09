@@ -1,0 +1,53 @@
+{% extends 'predictor/base.html' %}
+{% load static %}
+
+{% block title %}Predict Employee Retention{% endblock %}
+
+{% block content %}
+<div class="prediction-container">
+    <div class="prediction-header">
+        <h2>Employee Retention Prediction</h2>
+        <p>Fill out the form below to predict whether an employee will stay or leave.</p>
+    </div>
+
+    <div class="prediction-form">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <span class="field-help">{{ field.help_text }}</span>
+                    {% endif %}
+                    {% for error in field.errors %}
+                    <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="predict-button">
+                    <i class="fas fa-chart-line"></i> Predict
+                </button>
+                <a href="{% url 'dashboard' %}" class="secondary-button">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </form>
+    </div>
+
+    {% if prediction %}
+    <div class="prediction-result {% if prediction == 'Employee will LEAVE' %}leave{% else %}stay{% endif %}">
+        <h3>
+            {% if prediction == 'Employee will LEAVE' %}
+            <i class="fas fa-times-circle"></i> {{ prediction }}
+            {% else %}
+            <i class="fas fa-check-circle"></i> {{ prediction }}
+            {% endif %}
+        </h3>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

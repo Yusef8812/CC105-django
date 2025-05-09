@@ -1,0 +1,97 @@
+{% extends 'predictor/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1 class="dashboard-header">Employee Retention Dashboard</h1>
+    
+    {% if stats %}
+    <div class="stats-grid">
+        <div class="metric-card">
+            <div class="metric-value">{{ stats.total_records }}</div>
+            <div class="metric-label">Total Records</div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-value">{{ stats.num_features }}</div>
+            <div class="metric-label">Features Analyzed</div>
+        </div>
+        
+        <div class="metric-card accent">
+            <div class="metric-value">{{ stats.leave_count }}</div>
+            <div class="metric-label">Predicted to Leave</div>
+        </div>
+        
+        <div class="metric-card success">
+            <div class="metric-value">{{ stats.stay_count }}</div>
+            <div class="metric-label">Predicted to Stay</div>
+        </div>
+        
+        <div class="metric-card highlight">
+            <div class="metric-value">{{ stats.accuracy|floatformat:2 }}%</div>
+            <div class="metric-label">Model Accuracy</div>
+        </div>
+    </div>
+
+    <div class="dashboard-section">
+        <h2><i class="fas fa-table"></i> Confusion Matrix</h2>
+        <div class="confusion-matrix">
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Predicted Stay</th>
+                        <th>Predicted Leave</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Actual Stay</th>
+                        <td class="true-negative">{{ stats.conf_matrix.0.0|default:"N/A" }}</td>
+                        <td class="false-positive">{{ stats.conf_matrix.0.1|default:"N/A" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Actual Leave</th>
+                        <td class="false-negative">{{ stats.conf_matrix.1.0|default:"N/A" }}</td>
+                        <td class="true-positive">{{ stats.conf_matrix.1.1|default:"N/A" }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="matrix-legend">
+                <div><span class="legend-box true-positive"></span> True Positives</div>
+                <div><span class="legend-box true-negative"></span> True Negatives</div>
+                <div><span class="legend-box false-positive"></span> False Positives</div>
+                <div><span class="legend-box false-negative"></span> False Negatives</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-section">
+        <h2><i class="fas fa-chart-pie"></i> Visual Analytics</h2>
+        <div class="charts-container">
+            {% if stats.pie_chart_url %}
+            <div class="chart-card">
+                <h3>Leave/Stay Distribution</h3>
+                <img src="{{ stats.pie_chart_url }}" alt="Pie Chart" onerror="this.style.display='none';">
+            </div>
+            {% endif %}
+            
+            {% if stats.bar_chart_url %}
+            <div class="chart-card">
+                <h3>Feature Importance</h3>
+                <img src="{{ stats.bar_chart_url }}" alt="Bar Chart" onerror="this.style.display='none';">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% else %}
+    <div class="no-data">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>No data available to display. Please check the CSV file or model configuration.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
